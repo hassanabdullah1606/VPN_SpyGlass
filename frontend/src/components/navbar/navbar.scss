@@ -1,0 +1,51 @@
+@import '../../styles/responsive.scss';
+.navbar {
+  display: flex;
+  width: 100%;
+  padding: 8px;
+  color: white;
+  align-items: center;
+  // justify-content: space-between;
+  justify-content: flex-end;
+
+  .icons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .icon {
+      @include sm {
+        display: none;
+      }
+    }
+
+    .notifications {
+      position: relative;
+      span {
+        background-color: red;
+        color: white;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        position: absolute;
+        top: -1px;
+        right: -2px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+
+    .user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      img {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+    }
+  }
+}
