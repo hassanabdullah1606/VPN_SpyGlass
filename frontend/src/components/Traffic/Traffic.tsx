@@ -9,8 +9,7 @@ interface NetworkPacket {
   dst_port: number;
 }
 
-//const api_base = 'https://vpnspyglass-api.vercel.app';
-const ws_base = 'wss://vpnspyglass-api.vercel.app'; // WebSocket endpoint
+const api_base = 'https://vpnspyglass-api.vercel.app';
 
 const Traffic = () => {
   const [allTraffic, setAllTraffic] = useState<NetworkPacket[]>([]);
@@ -19,11 +18,10 @@ const Traffic = () => {
 
   useEffect(() => {
     getTraffic();
-    setupWebSocket();
   }, []);
 
   const getTraffic = () => {
-    fetch(ws_base + '/api/network-packets-current-date')
+    fetch(api_base + '/api/network-packets-current-date')
       .then((res) => res.json())
       .then((data) => {
         const currentDate = new Date().toISOString().split('T')[0];
@@ -57,20 +55,6 @@ const Traffic = () => {
       ...item,
       timestamp: `${formattedHours}:${formattedMinutes} ${ampm}`,
     };
-  };
-
-  const setupWebSocket = () => {
-    const ws = new WebSocket(ws_base);
-    ws.onopen = () => console.log('Connected to WebSocket server');
-
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      setAllTraffic(data);
-    };
-
-    ws.onerror = (error) => console.error('WebSocket error:', error);
-
-    ws.onclose = () => console.log('WebSocket connection closed');
   };
 
   return (
