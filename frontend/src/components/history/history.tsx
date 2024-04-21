@@ -11,7 +11,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 
-const api_base = 'https://vpnspyglass-api.vercel.app/';
+const api_base = 'https://vpnspyglass-api.vercel.app';
 
 const History: React.FC = () => {
   const [chartData, setChartData] = useState<

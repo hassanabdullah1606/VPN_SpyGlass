@@ -14,7 +14,7 @@ interface PacketData {
   VPN_Type: string;
 }
 
-const api_base = 'https://vpnspyglass-api.vercel.app/';
+const api_base = 'https://vpnspyglass-api.vercel.app';
 
 const PieChartBox: React.FC = () => {
   const [chartData, setChartData] = useState<

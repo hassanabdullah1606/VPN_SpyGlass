@@ -13,7 +13,7 @@ interface NetworkPacket {
 
 // credits: Ali Mazhar
 
-const api_base = 'https://vpnspyglass-api.vercel.app/';
+const api_base = 'https://vpnspyglass-api.vercel.app';
 
 const ChartBox = () => {
   const [totalPackets, setTotalPackets] = useState<number>(0);

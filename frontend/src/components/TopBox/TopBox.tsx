@@ -12,7 +12,7 @@ interface VPNUserData {
   vpnname: string;
 }
 
-const api_base = 'https://vpnspyglass-api.vercel.app/';
+const api_base = 'https://vpnspyglass-api.vercel.app';
 
 const TopBox = () => {
   const [topVPNs, setTopVPNs] = useState<TopVPNData[]>([]);
