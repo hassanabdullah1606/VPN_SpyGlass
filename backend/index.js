@@ -1,4 +1,5 @@
 require('dotenv').config();
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -22,18 +23,10 @@ mongoose
     console.error('Error connecting to MongoDB:', err);
   });
 
-app.get('/api/network-packets', async (req, res) => {
-  try {
-    const packets = await NetworkPacket.find();
-    res.json(packets);
-    // console.log(packets);
-  } catch (err) {
-    console.error('Error fetching data:', err);
-    res.status(500).json({ error: 'Error fetching data' });
-  }
-});
+let lastFetchTime = null;
+let lastData = [];
 
-app.get('/api/network-packets-current-date', async (req, res) => {
+const fetchAndUpdateData = async () => {
   try {
     const currentDate = new Date().toISOString().split('T')[0];
     const packets = await NetworkPacket.find({
@@ -43,7 +36,29 @@ app.get('/api/network-packets-current-date', async (req, res) => {
       },
     });
 
-    res.json(packets);
+    if (JSON.stringify(packets) !== JSON.stringify(lastData)) {
+      lastData = packets;
+      lastFetchTime = new Date();
+    }
+  } catch (err) {
+    console.error('Error fetching data:', err);
+  }
+};
+
+setInterval(fetchAndUpdateData, 1000);
+
+app.get('/api/network-packets', async (req, res) => {
+  try {
+    res.json(lastData);
+  } catch (err) {
+    console.error('Error fetching data:', err);
+    res.status(500).json({ error: 'Error fetching data' });
+  }
+});
+
+app.get('/api/network-packets-current-date', async (req, res) => {
+  try {
+    res.json(lastData);
   } catch (err) {
     console.error('Error fetching data:', err);
     res.status(500).json({ error: 'Error fetching data' });
@@ -61,7 +76,7 @@ app.post('/api/network-packets', async (req, res) => {
   }
 });
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 6000;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
