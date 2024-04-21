@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { topVPNsUsers } from '../../data';
 import './Traffic.scss';
 
