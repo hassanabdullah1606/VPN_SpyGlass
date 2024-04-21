@@ -9,7 +9,7 @@ interface NetworkPacket {
   dst_port: number;
 }
 
-const api_base = 'https://vpnspyglass-api.vercel.app';
+//const api_base = 'https://vpnspyglass-api.vercel.app';
 const ws_base = 'wss://vpnspyglass-api.vercel.app'; // WebSocket endpoint
 
 const Traffic = () => {
