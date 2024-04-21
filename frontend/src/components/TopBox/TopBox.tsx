@@ -85,8 +85,6 @@ const TopBox = () => {
           {topVPNs.map((vpn, index) => {
             // Find corresponding VPN user data
             const user = vpnUsers.find((user) => user.vpnname === vpn.VPN_Type);
-            console.log(user?.vpnname);
-            console.log(vpn.VPN_Type);
 
             return (
               <div className="listItem" key={index}>
