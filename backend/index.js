@@ -6,7 +6,7 @@ const cors = require('cors');
 const NetworkPacket = require('./models/TrafficModel');
 
 app.use(cors({
-  origin: "*",
+  origin: "https://vpnspyglass.vercel.app",
   methods: ["POST","GET"],
   credentials: true
 }));
