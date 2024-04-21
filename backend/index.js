@@ -5,11 +5,7 @@ const cors = require('cors');
 
 const NetworkPacket = require('./models/TrafficModel');
 
-app.use(cors({
-  origin: "*",
-  methods: ["POST","GET"],
-  credentials: true
-}));
+app.use(cors());
 
 
 const dbURI = process.env.DB_URI;
