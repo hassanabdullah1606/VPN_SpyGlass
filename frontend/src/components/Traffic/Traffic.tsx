@@ -10,11 +10,30 @@ interface NetworkPacket {
 }
 
 const api_base = 'https://vpnspyglass-api.vercel.app';
+let socket: WebSocket | null = null;
 
 const Traffic = () => {
   const [allTraffic, setAllTraffic] = useState<NetworkPacket[]>([]);
   const [loading, setLoading] = useState(true);
-  const [noData, setNoData] = useState(false); // Change initial state to false
+  const [noData, setNoData] = useState(false);
+
+  useEffect(() => {
+    // Establish WebSocket connection
+    socket = new WebSocket('https://vpnspyglass-api.vercel.app'); // Adjust URL accordingly
+
+    // Listen for messages from the WebSocket server
+    socket.onmessage = (event) => {
+      const newData: NetworkPacket = JSON.parse(event.data);
+      setAllTraffic((prevTraffic) => [...prevTraffic, newData]);
+    };
+
+    // Cleanup function
+    return () => {
+      if (socket) {
+        socket.close();
+      }
+    };
+  }, []);
 
   useEffect(() => {
     getTraffic();
@@ -24,17 +43,10 @@ const Traffic = () => {
     fetch(api_base + '/api/network-packets-current-date')
       .then((res) => res.json())
       .then((data) => {
-        const currentDate = new Date().toISOString().split('T')[0];
-        const filteredData = data.filter((item: NetworkPacket) => {
-          const itemDate = new Date(item.timestamp).toISOString().split('T')[0];
-          return itemDate === currentDate;
-        });
-        if (filteredData.length === 0) {
-          // Set noData to true if there is no data for the current date
+        if (data.length === 0) {
           setNoData(true);
         } else {
-          // Otherwise, set the traffic data
-          setAllTraffic(filteredData.map(formatTimestamp));
+          setAllTraffic(data.map(formatTimestamp));
         }
         setLoading(false);
       })
