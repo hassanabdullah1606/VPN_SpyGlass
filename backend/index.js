@@ -1,28 +1,20 @@
 require('dotenv').config();
+
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors');
-const http = require('http'); // Add this line
-const socketIo = require('socket.io'); // Add this line
-
+const http = require('http');
+const socketIo = require('socket.io');
 const NetworkPacket = require('./models/TrafficModel');
 
 const app = express();
-
-// Disable CORS
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*'); // Allow requests from any origin
-  res.header('Access-Control-Allow-Headers', '*'); // Allow any headers
-  res.header('Access-Control-Allow-Methods', '*'); // Allow any HTTP methods
-  next();
+const server = http.createServer(app);
+const io = socketIo(server, {
+  cors: {
+    origin: 'https://vpnspyglass.vercel.app',
+    methods: ['GET', 'POST'],
+    credentials: true
+  }
 });
-// const corsOptions = {
-//   origin: 'https://vpnspyglass.vercel.app',
-//   methods: ['GET', 'POST'],
-//   credentials: true,
-// };
-
-// app.use(cors(corsOptions));
 
 const dbURI = process.env.DB_URI;
 
@@ -34,24 +26,6 @@ mongoose
   .catch((err) => {
     console.error('Error connecting to MongoDB:', err);
   });
-
-const server = http.createServer(app); // Replace app.listen() with this
-const io = socketIo(server); // Add this line
-
-io.on('connection', (socket) => {
-  console.log('Client connected');
-
-  // Emit an event when a new packet is created
-  NetworkPacket.watch().on('change', (change) => {
-    if (change.operationType === 'insert') {
-      socket.emit('newPacket', change.fullDocument);
-    }
-  });
-
-  socket.on('disconnect', () => {
-    console.log('Client disconnected');
-  });
-});
 
 app.get('/api/network-packets', async (req, res) => {
   try {
@@ -91,6 +65,19 @@ app.post('/api/network-packets', async (req, res) => {
   }
 });
 
+NetworkPacket.watch().on('change', (change) => {
+  if (change.operationType === 'insert') {
+    io.emit('newPacket', change.fullDocument);
+  }
+});
+
+io.on('connection', (socket) => {
+  console.log('Client connected');
+
+  socket.on('disconnect', () => {
+    console.log('Client disconnected');
+  });
+});
 
 const port = process.env.PORT || 5000;
 server.listen(port, () => {
