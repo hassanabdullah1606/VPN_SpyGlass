@@ -8,11 +8,15 @@ const socketIo = require('socket.io'); // Add this line
 const NetworkPacket = require('./models/TrafficModel');
 
 const app = express();
-app.use(cors({
-  origin: ["https://vpnspyglass.vercel.app"],
-  methods: ["POST","GET"],
-  credentials: true
-}));
+
+const corsOptions = {
+  origin: 'https://vpnspyglass.vercel.app',
+  methods: ['GET', 'POST'],
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+
 const dbURI = process.env.DB_URI;
 
 mongoose
