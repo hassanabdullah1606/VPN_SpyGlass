@@ -1,5 +1,6 @@
 import './Traffic.scss';
 import { useState, useEffect } from 'react';
+import io from 'socket.io-client'; // Add this line
 
 interface NetworkPacket {
   timestamp: string;
@@ -10,6 +11,7 @@ interface NetworkPacket {
 }
 
 const api_base = 'https://vpnspyglass-api.vercel.app';
+const socket = io(api_base); // Add this line
 
 const Traffic = () => {
   const [allTraffic, setAllTraffic] = useState<NetworkPacket[]>([]);
@@ -18,9 +20,19 @@ const Traffic = () => {
 
   useEffect(() => {
     getTraffic();
+
+    // Add event listener for new packets
+    socket.on('newPacket', (packet: NetworkPacket) => {
+      setAllTraffic((prevTraffic) => [packet, ...prevTraffic]);
+    });
+
+    return () => {
+      socket.disconnect(); // Disconnect the socket on component unmount
+    };
   }, []);
 
   const getTraffic = () => {
+    // Fetch existing traffic data
     fetch(api_base + '/api/network-packets-current-date')
       .then((res) => res.json())
       .then((data) => {
