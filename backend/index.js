@@ -35,11 +35,14 @@ app.get('/api/network-packets', async (req, res) => {
 
 app.get('/api/network-packets-current-date', async (req, res) => {
   try {
-    const currentDate = new Date().toISOString().split('T')[0];
+    const currentDate = new Date();
+    const startOfDay = new Date(Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 0, 0, 0));
+    const endOfDay = new Date(Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 23, 59, 59, 999));
+    
     const packets = await NetworkPacket.find({
       timestamp: {
-        $gte: new Date(currentDate),
-        $lt: new Date(currentDate + 'T23:59:59.999Z'),
+        $gte: startOfDay,
+        $lt: endOfDay,
       },
     });
 

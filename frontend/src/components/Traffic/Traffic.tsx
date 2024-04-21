@@ -1,5 +1,6 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { topVPNsUsers } from '../../data';
 import './Traffic.scss';
-import { useState, useEffect } from 'react';
 
 interface NetworkPacket {
   timestamp: string;
@@ -7,17 +8,34 @@ interface NetworkPacket {
   destination_ip: string;
   src_port: number;
   dst_port: number;
+  VPN_Type: string;
+}
+
+interface VPNUserData {
+  img: string;
+  vpnname: string;
 }
 
 const api_base = 'https://vpnspyglass-api.vercel.app';
 
+
 const Traffic = () => {
   const [allTraffic, setAllTraffic] = useState<NetworkPacket[]>([]);
   const [loading, setLoading] = useState(true);
-  const [noData, setNoData] = useState(false); // Change initial state to false
+  const [noData, setNoData] = useState(false);
+  const [vpnUsers, setVPNUsers] = useState<VPNUserData[]>([]);
+  const tableRef = useRef<HTMLTableElement>(null);
 
   useEffect(() => {
     getTraffic();
+    // Scroll to the bottom when allTraffic changes
+    scrollToBottom();
+  }, [allTraffic]); // Add allTraffic to the dependency array
+
+  useEffect(() => {
+    // Fetch VPN user data
+    // Assuming topVPNsUsers contains VPN user data similar to VPNUserData interface
+    setVPNUsers(topVPNsUsers);
   }, []);
 
   const getTraffic = () => {
@@ -30,10 +48,8 @@ const Traffic = () => {
           return itemDate === currentDate;
         });
         if (filteredData.length === 0) {
-          // Set noData to true if there is no data for the current date
           setNoData(true);
         } else {
-          // Otherwise, set the traffic data
           setAllTraffic(filteredData.map(formatTimestamp));
         }
         setLoading(false);
@@ -46,15 +62,22 @@ const Traffic = () => {
 
   const formatTimestamp = (item: NetworkPacket) => {
     const timestamp = new Date(item.timestamp);
-    const hours = timestamp.getHours();
-    const minutes = timestamp.getMinutes();
-    const ampm = hours >= 12 ? 'pm' : 'am';
-    const formattedHours = hours % 12 === 0 ? 12 : hours % 12;
+    let hours = timestamp.getUTCHours();
+    const minutes = timestamp.getUTCMinutes();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12;
     const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
     return {
       ...item,
-      timestamp: `${formattedHours}:${formattedMinutes} ${ampm}`,
+      timestamp: `${hours}:${formattedMinutes} ${ampm}`,
     };
+  };
+
+  const scrollToBottom = () => {
+    if (tableRef.current) {
+      tableRef.current.scrollTop = tableRef.current.scrollHeight;
+    }
   };
 
   return (
@@ -68,7 +91,7 @@ const Traffic = () => {
           Block
         </a>
       </div>
-      <div className="livetraffic">
+      <div className="livetraffic" ref={tableRef}>
         {loading ? (
           <img className="loading" src="./loading.png" alt="loading" />
         ) : noData ? (
@@ -88,16 +111,21 @@ const Traffic = () => {
               </tr>
             </thead>
             <tbody>
-              {allTraffic.map((item, index) => (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>{item.timestamp}</td>
-                  <td>{item.source_ip}</td>
-                  <td>{item.destination_ip}</td>
-                  <td>{item.src_port}</td>
-                  <td>{item.dst_port}</td>
-                </tr>
-              ))}
+              {allTraffic.map((item, index) => {
+                const user = vpnUsers.find((user) => user.vpnname === item.VPN_Type);
+                return (
+                  <tr key={index}>
+                    <td>
+                      {user && <img className={'logoimg'} src={user.img} alt={user.vpnname} />}
+                    </td>
+                    <td>{item.timestamp}</td>
+                    <td>{item.source_ip}</td>
+                    <td>{item.destination_ip}</td>
+                    <td>{item.src_port}</td>
+                    <td>{item.dst_port}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         )}
