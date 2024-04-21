@@ -12,10 +12,10 @@ app.use(cors({
   methods: ["POST","GET"],
   credentials: true
 }));
+
 const dbURI = process.env.DB_URI;
 
-mongoose
-  .connect(dbURI)
+mongoose.connect(dbURI)
   .then(() => {
     console.log('Connected to MongoDB');
   })
@@ -23,10 +23,39 @@ mongoose
     console.error('Error connecting to MongoDB:', err);
   });
 
-let lastFetchTime = null;
-let lastData = [];
+let previousData = null;
 
-const fetchAndUpdateData = async () => {
+const fetchTrafficData = async () => {
+  try {
+    const packets = await NetworkPacket.find();
+    const newData = JSON.stringify(packets);
+    if (newData !== previousData) {
+      previousData = newData;
+      app.set('trafficData', packets);
+      console.log('New data fetched');
+    }
+  } catch (err) {
+    console.error('Error fetching data:', err);
+  }
+};
+
+// Fetch data initially
+fetchTrafficData();
+
+// Fetch data every second
+setInterval(fetchTrafficData, 1000);
+
+app.get('/api/network-packets', async (req, res) => {
+  try {
+    const trafficData = app.get('trafficData');
+    res.json(trafficData);
+  } catch (err) {
+    console.error('Error fetching data:', err);
+    res.status(500).json({ error: 'Error fetching data' });
+  }
+});
+
+app.get('/api/network-packets-current-date', async (req, res) => {
   try {
     const currentDate = new Date().toISOString().split('T')[0];
     const packets = await NetworkPacket.find({
@@ -36,29 +65,7 @@ const fetchAndUpdateData = async () => {
       },
     });
 
-    if (JSON.stringify(packets) !== JSON.stringify(lastData)) {
-      lastData = packets;
-      lastFetchTime = new Date();
-    }
-  } catch (err) {
-    console.error('Error fetching data:', err);
-  }
-};
-
-setInterval(fetchAndUpdateData, 1000);
-
-app.get('/api/network-packets', async (req, res) => {
-  try {
-    res.json(lastData);
-  } catch (err) {
-    console.error('Error fetching data:', err);
-    res.status(500).json({ error: 'Error fetching data' });
-  }
-});
-
-app.get('/api/network-packets-current-date', async (req, res) => {
-  try {
-    res.json(lastData);
+    res.json(packets);
   } catch (err) {
     console.error('Error fetching data:', err);
     res.status(500).json({ error: 'Error fetching data' });

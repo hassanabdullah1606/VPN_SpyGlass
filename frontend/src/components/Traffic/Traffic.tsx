@@ -17,8 +17,7 @@ const Traffic = () => {
   const [noData, setNoData] = useState(false); // Change initial state to false
 
   useEffect(() => {
-    const interval = setInterval(getTraffic, 1000);
-    return () => clearInterval(interval);
+    getTraffic();
   }, []);
 
   const getTraffic = () => {
