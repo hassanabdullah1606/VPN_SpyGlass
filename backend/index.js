@@ -8,10 +8,12 @@ const socketIo = require('socket.io'); // Add this line
 const NetworkPacket = require('./models/TrafficModel');
 
 const app = express();
+
+// Disable CORS
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', '*');
-  res.header('Access-Control-Allow-Methods', '*');
+  res.header('Access-Control-Allow-Origin', '*'); // Allow requests from any origin
+  res.header('Access-Control-Allow-Headers', '*'); // Allow any headers
+  res.header('Access-Control-Allow-Methods', '*'); // Allow any HTTP methods
   next();
 });
 // const corsOptions = {
