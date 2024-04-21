@@ -8,7 +8,12 @@ const socketIo = require('socket.io'); // Add this line
 const NetworkPacket = require('./models/TrafficModel');
 
 const app = express();
-
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', '*');
+  res.header('Access-Control-Allow-Methods', '*');
+  next();
+});
 const corsOptions = {
   origin: 'https://vpnspyglass.vercel.app',
   methods: ['GET', 'POST'],
