@@ -2,8 +2,6 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const http = require('http');
-const socketIo = require('socket.io');
 
 const NetworkPacket = require('./models/TrafficModel');
 
@@ -13,7 +11,6 @@ app.use(cors({
   methods: ["POST","GET"],
   credentials: true
 }));
-
 const dbURI = process.env.DB_URI;
 
 mongoose
@@ -25,19 +22,11 @@ mongoose
     console.error('Error connecting to MongoDB:', err);
   });
 
-// Create HTTP server
-const server = http.createServer(app);
-const io = socketIo(server);
-
-// Socket.io connection event
-io.on('connection', (socket) => {
-  console.log('Client connected');
-});
-
 app.get('/api/network-packets', async (req, res) => {
   try {
     const packets = await NetworkPacket.find();
     res.json(packets);
+    // console.log(packets);
   } catch (err) {
     console.error('Error fetching data:', err);
     res.status(500).json({ error: 'Error fetching data' });
@@ -65,8 +54,6 @@ app.post('/api/network-packets', async (req, res) => {
   try {
     const newPacketData = req.body;
     const createdPacket = await NetworkPacket.create(newPacketData);
-    // Emit new entry to connected clients
-    io.emit('newEntry', createdPacket);
     res.status(201).json(createdPacket);
   } catch (err) {
     console.error('Error creating new packet:', err);
@@ -75,6 +62,6 @@ app.post('/api/network-packets', async (req, res) => {
 });
 
 const port = process.env.PORT || 5000;
-server.listen(port, () => {
+app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
