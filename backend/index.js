@@ -7,6 +7,11 @@ const socketIo = require('socket.io');
 const NetworkPacket = require('./models/TrafficModel');
 
 const app = express();
+app.use(cors({
+  origin: ["https://vpnspyglass.vercel.app"],
+  methods: ["POST","GET"],
+  credentials: true
+}));
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
