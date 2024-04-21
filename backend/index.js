@@ -76,7 +76,7 @@ app.post('/api/network-packets', async (req, res) => {
   }
 });
 
-const port = process.env.PORT || 6000;
+const port = process.env.PORT || 5000;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
