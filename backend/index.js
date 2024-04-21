@@ -14,13 +14,13 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Methods', '*');
   next();
 });
-const corsOptions = {
-  origin: 'https://vpnspyglass.vercel.app',
-  methods: ['GET', 'POST'],
-  credentials: true,
-};
+// const corsOptions = {
+//   origin: 'https://vpnspyglass.vercel.app',
+//   methods: ['GET', 'POST'],
+//   credentials: true,
+// };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
 const dbURI = process.env.DB_URI;
 
