@@ -1,5 +1,4 @@
 require('dotenv').config();
-
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -12,10 +11,10 @@ app.use(cors({
   methods: ["POST","GET"],
   credentials: true
 }));
-
 const dbURI = process.env.DB_URI;
 
-mongoose.connect(dbURI)
+mongoose
+  .connect(dbURI)
   .then(() => {
     console.log('Connected to MongoDB');
   })
@@ -23,32 +22,11 @@ mongoose.connect(dbURI)
     console.error('Error connecting to MongoDB:', err);
   });
 
-let previousData = null;
-
-const fetchTrafficData = async () => {
-  try {
-    const packets = await NetworkPacket.find();
-    const newData = JSON.stringify(packets);
-    if (newData !== previousData) {
-      previousData = newData;
-      app.set('trafficData', packets);
-      console.log('New data fetched');
-    }
-  } catch (err) {
-    console.error('Error fetching data:', err);
-  }
-};
-
-// Fetch data initially
-fetchTrafficData();
-
-// Fetch data every second
-setInterval(fetchTrafficData, 1000);
-
 app.get('/api/network-packets', async (req, res) => {
   try {
-    const trafficData = app.get('trafficData');
-    res.json(trafficData);
+    const packets = await NetworkPacket.find();
+    res.json(packets);
+    // console.log(packets);
   } catch (err) {
     console.error('Error fetching data:', err);
     res.status(500).json({ error: 'Error fetching data' });
