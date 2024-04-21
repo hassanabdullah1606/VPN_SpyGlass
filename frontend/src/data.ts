@@ -16,7 +16,7 @@ export const topVPNsUsers = [
     vpnname: 'Turbo VPN',
   },
   {
-    img: '.VPNs/Hideme.png',
+    img: '.VPNs/Hideme.svg',
     vpnname: 'Hide.me',
   },
   {
