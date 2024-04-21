@@ -1,9 +1,8 @@
 require('dotenv').config();
-
 const express = require('express');
 const mongoose = require('mongoose');
-const http = require('http');
-const socketIo = require('socket.io');
+const cors = require('cors');
+
 const NetworkPacket = require('./models/TrafficModel');
 
 const app = express();
@@ -12,15 +11,6 @@ app.use(cors({
   methods: ["POST","GET"],
   credentials: true
 }));
-const server = http.createServer(app);
-const io = socketIo(server, {
-  cors: {
-    origin: 'https://vpnspyglass.vercel.app',
-    methods: ['GET', 'POST'],
-    credentials: true
-  }
-});
-
 const dbURI = process.env.DB_URI;
 
 mongoose
@@ -36,6 +26,7 @@ app.get('/api/network-packets', async (req, res) => {
   try {
     const packets = await NetworkPacket.find();
     res.json(packets);
+    // console.log(packets);
   } catch (err) {
     console.error('Error fetching data:', err);
     res.status(500).json({ error: 'Error fetching data' });
@@ -70,21 +61,7 @@ app.post('/api/network-packets', async (req, res) => {
   }
 });
 
-NetworkPacket.watch().on('change', (change) => {
-  if (change.operationType === 'insert') {
-    io.emit('newPacket', change.fullDocument);
-  }
-});
-
-io.on('connection', (socket) => {
-  console.log('Client connected');
-
-  socket.on('disconnect', () => {
-    console.log('Client disconnected');
-  });
-});
-
 const port = process.env.PORT || 5000;
-server.listen(port, () => {
+app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
