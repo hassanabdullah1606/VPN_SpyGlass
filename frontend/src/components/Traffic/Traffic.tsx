@@ -23,7 +23,7 @@ const Traffic = () => {
   }, []);
 
   const getTraffic = () => {
-    fetch(api_base + '/api/network-packets-current-date')
+    fetch(ws_base + '/api/network-packets-current-date')
       .then((res) => res.json())
       .then((data) => {
         const currentDate = new Date().toISOString().split('T')[0];
