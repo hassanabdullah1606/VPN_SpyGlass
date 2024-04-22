@@ -59,7 +59,13 @@
       width: 100%; /* Ensure table fills its container */
       height: 300px;
     }
-
+    .logoimg{
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        object-fit: cover;
+        // border: 1px solid black;
+    }
     th,
     td {
       font-size: 13px;
