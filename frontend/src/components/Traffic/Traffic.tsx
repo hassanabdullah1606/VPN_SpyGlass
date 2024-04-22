@@ -30,7 +30,15 @@ const Traffic = () => {
     getTraffic();
     // Scroll to the bottom when allTraffic changes
     scrollToBottom();
-  }, [allTraffic]); // Add allTraffic to the dependency array
+
+    // Auto-reload every 5 seconds
+    const intervalId = setInterval(() => {
+      getTraffic();
+    }, 5000);
+
+    // Cleanup function to clear the interval when component unmounts
+    return () => clearInterval(intervalId);
+  }, []); // Empty dependency array to run this effect only once on mount
 
   useEffect(() => {
     // Fetch VPN user data
