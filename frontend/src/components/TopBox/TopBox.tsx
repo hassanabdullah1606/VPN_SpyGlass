@@ -40,7 +40,6 @@ const TopBox = () => {
       .then((data: any[]) => {
         const vpnCounts: { [key: string]: number } = {};
 
-        // Count occurrences of each VPN type
         data.forEach((packet) => {
           if (packet.VPN_Type in vpnCounts) {
             vpnCounts[packet.VPN_Type]++;
@@ -49,7 +48,6 @@ const TopBox = () => {
           }
         });
 
-        // Convert counts to array of objects
         const topVPNsData: TopVPNData[] = Object.keys(vpnCounts).map(
           (vpnType) => ({
             VPN_Type: vpnType,
@@ -57,10 +55,8 @@ const TopBox = () => {
           })
         );
 
-        // Sort by totalPackets in descending order
         topVPNsData.sort((a, b) => b.totalPackets - a.totalPackets);
 
-        // Select top 5 VPN types
         const top5VPNs = topVPNsData.slice(0, 5);
 
         setTopVPNs(top5VPNs);
