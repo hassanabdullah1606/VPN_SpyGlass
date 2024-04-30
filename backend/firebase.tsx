@@ -1,8 +1,8 @@
-// Import the functions you need from the SDKs you need
+import dotenv from 'dotenv';
+dotenv.config();
 import { initializeApp } from 'firebase/app';
-require('dotenv').config();
 import { getAuth } from 'firebase/auth';
-
+console.log("import sucessfull")
 const firebaseConfig = {
   apiKey: process.env.FB_API_KEY,
   authDomain:  process.env.FB_AUTH_DOMAIN,
