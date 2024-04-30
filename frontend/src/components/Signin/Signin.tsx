@@ -30,7 +30,7 @@ const Signin = () => {
       .then(async () => {
         setsubmitButtonDisabled(false);
 
-        navigate('/');
+        navigate('/home');
         // console.log(user);
       })
       .catch((err) => {
