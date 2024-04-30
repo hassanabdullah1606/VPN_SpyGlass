@@ -1,8 +1,11 @@
-import dotenv from 'dotenv';
+const dotenv = require('dotenv');
 dotenv.config();
-import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-console.log("import sucessfull")
+
+const { initializeApp } = require('firebase/app');
+const { getAuth } = require('firebase/auth');
+
+console.log("Import successful");
+
 const firebaseConfig = {
   apiKey: process.env.FB_API_KEY,
   authDomain:  process.env.FB_AUTH_DOMAIN,
@@ -12,9 +15,8 @@ const firebaseConfig = {
   appId:  process.env.FB_APP_ID,
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
 const auth = getAuth();
 
-export { app, auth };
+module.exports = { app, auth };

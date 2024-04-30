@@ -1,7 +1,7 @@
 import './Signin.scss';
 import { FaUser, FaLock } from 'react-icons/fa';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import '../../../../backend/firebase';
+import { auth } from '../../../../backend/firebase';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './Register.scss';
-import '../../../../backend/firebase';
+import { auth } from '../../../../backend/firebase';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 
