@@ -21,19 +21,19 @@ function App() {
       children: [
         {
           path: '/',
-          element: <Home />,
+          element: <Login />,
         },
         {
           path: '/settings',
           element: <Settings />,
         },
         {
-          path: '/FAQ',
+          path: '/faq',
           element: <Faq />,
         },
         {
-          path: '/login',
-          element: <Login />,
+          path: '/home',
+          element: <Home />,
         },
         {
           path: '/signup',

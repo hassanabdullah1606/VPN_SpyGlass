@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import './Register.scss';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { auth } from '../../firebase';
+import { auth } from '../../../../backend/firebase';
 import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
