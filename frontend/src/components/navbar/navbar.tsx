@@ -1,7 +1,7 @@
 import './navbar.scss';
 import { Link } from 'react-router-dom';
 // import Notifications from '../notifications/notifications';
-import { auth } from '../../firebase';
+import { auth } from '../../../../backend/firebase';
 import { useEffect, useState } from 'react';
 
 const Navbar = () => {
