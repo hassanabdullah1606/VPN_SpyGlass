@@ -1,7 +1,7 @@
 export const topVPNsUsers = [
   {
     img: 'VPNs/cloudflare-svgrepo-com.svg',
-    vpnname: 'Cloudfare WARP',
+    vpnname: 'Cloudflare WARP',
   },
   {
     img: 'VPNs/hotspot-shield-seeklogo.svg',
